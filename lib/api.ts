@@ -1,4 +1,4 @@
-import {
+import { DramaData,
   Drama,
   DramaResponse,
   DramaListResponse,
@@ -9,16 +9,19 @@ import {
 const BASE_URL = "https://magma-api.biz.id/dramabox";
 
 // Helper to normalize drama objects (handle different field names)
-function normalizeDrama(item: any): Drama {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function normalizeDrama(item: Record<string, any>): Drama {
   return {
     ...item,
     coverWap: item.coverWap || item.bookCover || "", // Fallback
     chapterCount: item.chapterCount || 0,
     introduction: item.introduction || "",
-  };
+    bookId: item.bookId || "", // Ensure required props exist
+    bookName: item.bookName || "",
+  } as Drama;
 }
 
-export async function fetchVIP(): Promise<any | null> {
+export async function fetchVIP(): Promise<DramaData | null> {
   try {
     const res = await fetch(`${BASE_URL}/vip`, { next: { revalidate: 3600 } });
     if (!res.ok) throw new Error(`API error: ${res.status}`);

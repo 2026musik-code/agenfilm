@@ -1,14 +1,11 @@
 import { fetchDramaDetails, fetchEpisodes } from '@/lib/api';
 import Navbar from '@/components/Navbar';
 import Player from '@/components/Player';
-import Image from 'next/image';
-import { Play, Info } from 'lucide-react';
-import Link from 'next/link';
+import { Play, Info, Share2, Plus } from 'lucide-react';
 
 export default async function DramaPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
-  // Fetch details and episodes in parallel
   const [drama, episodes] = await Promise.all([
     fetchDramaDetails(id),
     fetchEpisodes(id)
@@ -18,83 +15,52 @@ export default async function DramaPage({ params }: { params: Promise<{ id: stri
     return (
       <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center">
         <h1 className="text-4xl font-bold mb-4 font-serif text-luxury-gold">Drama Not Found</h1>
-        <p className="mb-8 text-gray-400">We couldn't find the drama you're looking for.</p>
-        <Link href="/" className="px-6 py-3 border border-luxury-gold text-luxury-gold rounded-full hover:bg-luxury-gold hover:text-black transition-all">
-          Return Home
-        </Link>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-luxury-black text-white selection:bg-luxury-gold selection:text-black pb-20">
+    <div className="min-h-screen bg-luxury-black text-white selection:bg-luxury-gold selection:text-black pb-20 md:pb-0">
       <Navbar />
 
-      {/* Detail Hero / Backdrop */}
-      <div className="relative h-[50vh] w-full mb-10">
-         <Image
-            src={drama.coverWap}
-            alt={drama.bookName}
-            fill
-            className="object-cover object-top opacity-40 blur-sm scale-105"
-            priority
-            unoptimized={false}
-         />
-         <div className="absolute inset-0 bg-gradient-to-t from-luxury-black via-luxury-black/90 to-transparent" />
+      {/* Main Content */}
+      <div className="pt-0 md:pt-20 lg:container lg:mx-auto lg:px-4">
 
-         <div className="absolute bottom-0 left-0 right-0 container mx-auto px-4 pb-10 flex flex-col md:flex-row gap-8 items-end z-10">
-            {/* Poster */}
-            <div className="relative w-32 md:w-48 aspect-[2/3] rounded-lg overflow-hidden shadow-2xl border border-white/20 flex-shrink-0 hidden md:block transform hover:scale-105 transition-transform duration-500">
-              <Image
-                src={drama.coverWap}
-                alt={drama.bookName}
-                fill
-                className="object-cover"
-                unoptimized={false}
-              />
-            </div>
-
-            {/* Info */}
-            <div className="flex-1 space-y-4 mb-4 animate-in slide-in-from-bottom-5 fade-in duration-700">
-              <h1 className="text-3xl md:text-5xl font-bold font-serif leading-tight text-shadow text-white">
-                {drama.bookName}
-              </h1>
-
-              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-300">
-                {drama.playCount && (
-                  <span className="flex items-center bg-black/40 px-3 py-1 rounded-full backdrop-blur-md border border-white/10">
-                    <Play className="w-3 h-3 mr-2 text-luxury-gold" fill="currentColor" /> {drama.playCount} Views
-                  </span>
-                )}
-                {episodes.length > 0 && <span className="bg-black/40 px-3 py-1 rounded-full backdrop-blur-md border border-white/10">{episodes.length} Episodes</span>}
-                {drama.tags?.map(tag => (
-                  <span key={tag} className="px-3 py-1 border border-luxury-gold/30 rounded-full text-xs bg-luxury-gold/10 text-luxury-gold font-medium">{tag}</span>
-                ))}
-              </div>
-            </div>
-         </div>
-      </div>
-
-      <div className="container mx-auto px-4 space-y-12 relative z-20">
-         {/* Player Section */}
-         <section id="watch">
-            <h2 className="text-2xl font-bold mb-6 text-white font-serif border-l-4 border-luxury-gold pl-4 flex items-center">
-                <Play className="w-5 h-5 mr-3 fill-luxury-gold" /> Watch Now
-            </h2>
+         {/* Video Player Area */}
+         <div className="w-full bg-black lg:rounded-xl overflow-hidden shadow-2xl border border-white/5 relative z-20">
             <Player drama={drama} episodes={episodes} />
-         </section>
+         </div>
 
-         {/* Synopsis */}
-         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div className="md:col-span-2">
-                <section className="bg-white/5 p-8 rounded-2xl border border-white/5 backdrop-blur-sm">
-                  <h2 className="text-2xl font-bold mb-4 flex items-center text-luxury-gold font-serif">
-                    <Info className="w-5 h-5 mr-2" /> Synopsis
-                  </h2>
-                  <p className="text-gray-300 leading-relaxed text-lg font-light">
-                    {drama.introduction || "No description available."}
-                  </p>
-                </section>
+         {/* Drama Info Section */}
+         <div className="px-4 py-6 md:px-0 space-y-6 animate-in slide-in-from-bottom-5 fade-in duration-500">
+            <h1 className="text-2xl md:text-4xl font-bold font-serif leading-tight text-white mt-4">
+                {drama.bookName}
+            </h1>
+
+            <div className="flex items-center space-x-4 text-xs md:text-sm text-gray-400">
+                <span className="bg-white/10 px-2 py-1 rounded text-white font-semibold">HD</span>
+                <span>{drama.chapterCount || episodes.length} Episodes</span>
+                <span className="flex items-center"><Play size={12} className="mr-1" /> {drama.playCount} views</span>
+            </div>
+
+            <p className="text-gray-300 text-sm md:text-base leading-relaxed line-clamp-3 md:line-clamp-none">
+                {drama.introduction}
+            </p>
+
+            {/* Action Buttons */}
+            <div className="flex gap-8 border-t border-white/10 pt-6 justify-around md:justify-start">
+                <button className="flex flex-col items-center text-gray-400 hover:text-luxury-gold transition-colors text-xs gap-2">
+                    <Plus size={24} />
+                    <span>My List</span>
+                </button>
+                <button className="flex flex-col items-center text-gray-400 hover:text-luxury-gold transition-colors text-xs gap-2">
+                    <Share2 size={24} />
+                    <span>Share</span>
+                </button>
+                <button className="flex flex-col items-center text-gray-400 hover:text-luxury-gold transition-colors text-xs gap-2">
+                    <Info size={24} />
+                    <span>Details</span>
+                </button>
             </div>
          </div>
       </div>

@@ -1,3 +1,4 @@
+import { DramaColumn } from "@/types/drama";
 import { fetchVIP, fetchList } from '@/lib/api';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
@@ -33,7 +34,7 @@ export default async function Home() {
       <div className="pb-20 space-y-8 md:space-y-16 -mt-20 relative z-20">
 
         {/* Render VIP Columns (from original structure) */}
-        {vipData?.columnVoList?.map((column: any) => (
+        {vipData?.columnVoList?.map((column: DramaColumn) => (
           <Section
             key={`vip-${column.columnId}`}
             title={column.title}

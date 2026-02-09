@@ -24,7 +24,7 @@ export default async function SearchPage({
 
         {query && results.length === 0 && (
           <div className="text-center py-20 text-gray-400">
-            <p className="text-xl">No results found for "{query}".</p>
+            <p className="text-xl">No results found for &quot;{query}&quot;quot;{query}&quot;{query}&quot;quot;.</p>
             <p className="mt-2 text-sm">Try checking your spelling or use different keywords.</p>
           </div>
         )}
