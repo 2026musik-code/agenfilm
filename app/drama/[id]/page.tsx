@@ -32,23 +32,23 @@ export default async function DramaPage({ params }: { params: Promise<{ id: stri
          </div>
 
          {/* Drama Info Section */}
-         <div className="px-4 py-6 md:px-0 space-y-6 animate-in slide-in-from-bottom-5 fade-in duration-500">
-            <h1 className="text-2xl md:text-4xl font-bold font-serif leading-tight text-white mt-4">
+         <div className="px-4 py-3 md:py-6 md:px-0 space-y-3 md:space-y-6 animate-in slide-in-from-bottom-5 fade-in duration-500">
+            <h1 className="text-xl md:text-4xl font-bold font-serif leading-tight text-white mt-2 md:mt-4">
                 {drama.bookName}
             </h1>
 
-            <div className="flex items-center space-x-4 text-xs md:text-sm text-gray-400">
-                <span className="bg-white/10 px-2 py-1 rounded text-white font-semibold">HD</span>
+            <div className="flex items-center space-x-4 text-[10px] md:text-sm text-gray-400">
+                <span className="bg-white/10 px-2 py-0.5 rounded text-white font-semibold">HD</span>
                 <span>{drama.chapterCount || episodes.length} Episodes</span>
                 <span className="flex items-center"><Play size={12} className="mr-1" /> {drama.playCount} views</span>
             </div>
 
-            <p className="text-gray-300 text-sm md:text-base leading-relaxed line-clamp-3 md:line-clamp-none">
+            <p className="text-gray-300 text-xs md:text-base leading-relaxed line-clamp-3 md:line-clamp-none">
                 {drama.introduction}
             </p>
 
             {/* Action Buttons */}
-            <div className="flex gap-8 border-t border-white/10 pt-6 justify-around md:justify-start">
+            <div className="flex gap-8 border-t border-white/10 pt-4 md:pt-6 justify-around md:justify-start">
                 <button className="flex flex-col items-center text-gray-400 hover:text-luxury-gold transition-colors text-xs gap-2">
                     <Plus size={24} />
                     <span>My List</span>
