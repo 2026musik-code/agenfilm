@@ -39,7 +39,7 @@ export default function MovieCard({ drama }: { drama: Drama }) {
       </div>
 
       <div className="mt-3 px-1">
-        <h3 className="text-sm md:text-base text-gray-200 group-hover:text-luxury-gold truncate transition-colors font-medium">
+        <h3 className="text-sm md:text-base text-gray-200 group-hover:text-luxury-gold line-clamp-2 transition-colors font-medium h-[2.5em] leading-tight">
             {drama.bookName}
         </h3>
         {drama.playCount && (
