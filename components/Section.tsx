@@ -15,7 +15,7 @@ export default function Section({ title, bookList, columnId, subTitle }: Section
 
   return (
     <section className="py-2 md:py-6 border-b border-luxury-gray/10 last:border-0 relative">
-      <div className="container mx-auto px-4 mb-2 md:mb-4 flex justify-between items-end">
+      <div className="container mx-auto px-2 md:px-4 mb-2 md:mb-4 flex justify-between items-end">
         <div>
           <h2 className="text-lg md:text-2xl font-bold text-white tracking-tight font-serif flex items-center">
             <span className="w-1 h-5 md:h-6 bg-luxury-gold mr-2 md:mr-3 rounded-full" />
@@ -36,14 +36,14 @@ export default function Section({ title, bookList, columnId, subTitle }: Section
       </div>
 
       <div className="relative group">
-        <div className="flex overflow-x-auto space-x-2 md:space-x-4 pb-2 md:pb-4 px-4 md:px-8 scroll-smooth snap-x snap-mandatory scrollbar-hide">
+        <div className="grid grid-rows-2 grid-flow-col gap-2 md:gap-4 overflow-x-auto pb-2 md:pb-4 px-2 md:px-8 scroll-smooth snap-x snap-mandatory scrollbar-hide">
           {bookList.map((drama) => (
-            <div key={drama.bookId} className="snap-start flex-shrink-0 w-28 md:w-44">
+            <div key={drama.bookId} className="snap-start w-28 md:w-44">
                <MovieCard drama={drama} />
             </div>
           ))}
           {/* Spacer for right padding */}
-          <div className="w-2 md:w-4 flex-shrink-0" />
+          <div className="w-2 md:w-4 row-span-2" />
         </div>
 
         {/* Gradient Fade for scroll indicators */}

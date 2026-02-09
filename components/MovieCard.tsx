@@ -5,7 +5,7 @@ import { Play } from 'lucide-react';
 
 export default function MovieCard({ drama }: { drama: Drama }) {
   return (
-    <Link href={`/drama/${drama.bookId}`} className="group relative block w-36 md:w-44 flex-shrink-0 transition-transform duration-300 hover:scale-105">
+    <Link href={`/drama/${drama.bookId}`} className="group relative block w-full flex-shrink-0 transition-transform duration-300 hover:scale-105">
       <div className="relative aspect-[2/3] rounded-lg overflow-hidden shadow-lg border border-white/5 group-hover:border-luxury-gold transition-all duration-300 bg-luxury-gray">
         <Image
           src={drama.coverWap}
