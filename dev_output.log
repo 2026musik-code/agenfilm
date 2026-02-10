@@ -38,3 +38,11 @@ Paymenku API Error: {
   message: 'Unauthorized. Invalid API Key format. Use sk_live_* or sk_test_*'
 }
  POST /api/register 200 in 1468ms (compile: 371ms, render: 1097ms)
+ POST /api/admin/login 200 in 395ms (compile: 175ms, render: 220ms)
+ POST /api/admin/create-pin 200 in 607ms (compile: 564ms, render: 43ms)
+Login attempt with PIN: 77777
+Login success for user: PIN Test User (MANUAL-1770730833463)
+ POST /api/user/login 200 in 866ms (compile: 757ms, render: 108ms)
+Login attempt with PIN: 77777
+Login success for user: PIN Test User (MANUAL-1770730833463)
+ POST /api/user/login 200 in 126ms (compile: 38ms, render: 88ms)

@@ -57,6 +57,16 @@
       "qrCode": "",
       "qrUrl": "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=DemoPayment-ORDER-1770728440235-783",
       "createdAt": "2026-02-10T13:00:41.298Z"
+    },
+    {
+      "id": "MANUAL-1770730833463",
+      "name": "PIN Test User",
+      "email": "pin@test.com",
+      "pin": "77777",
+      "paymentStatus": "paid",
+      "qrCode": "",
+      "qrUrl": "",
+      "createdAt": "2026-02-10T13:40:33.463Z"
     }
   ],
   "settings": {

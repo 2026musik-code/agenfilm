@@ -3,17 +3,29 @@ import { getUserByPin } from '@/lib/db';
 
 export async function POST(req: Request) {
   try {
-    const { pin } = await req.json();
+    const body = await req.json();
+    let { pin } = body;
+
     if (!pin) return NextResponse.json({ error: 'PIN required' }, { status: 400 });
 
+    // Normalize PIN to string and trim
+    pin = String(pin).trim();
+
+    console.log(`Login attempt with PIN: ${pin}`); // Debug log
+
     const user = await getUserByPin(pin);
+
     if (!user) {
+      console.log('Login failed: PIN not found');
       return NextResponse.json({ error: 'Invalid PIN' }, { status: 401 });
     }
 
     if (user.paymentStatus !== 'paid') {
+       console.log(`Login failed: Payment status is ${user.paymentStatus}`);
        return NextResponse.json({ error: 'Payment not completed' }, { status: 403 });
     }
+
+    console.log(`Login success for user: ${user.name} (${user.id})`);
 
     const response = NextResponse.json({
         success: true,
@@ -37,6 +49,7 @@ export async function POST(req: Request) {
     return response;
 
   } catch (error) {
+    console.error('Login error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
