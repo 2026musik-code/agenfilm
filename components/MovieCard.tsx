@@ -4,11 +4,17 @@ import Link from 'next/link';
 import { Play } from 'lucide-react';
 
 export default function MovieCard({ drama }: { drama: Drama }) {
+  const queryParams = new URLSearchParams({
+    title: drama.bookName,
+    cover: drama.coverWap,
+    intro: (drama.introduction || "").substring(0, 200) // limit length
+  }).toString();
+
   return (
-    <Link href={`/drama/${drama.bookId}`} className="group relative block w-full flex-shrink-0 transition-transform duration-300 hover:scale-105">
+    <Link href={`/drama/${drama.bookId}?${queryParams}`} className="group relative block w-full flex-shrink-0 transition-transform duration-300 hover:scale-105">
       <div className="relative aspect-[2/3] rounded-lg overflow-hidden shadow-lg border border-white/5 group-hover:border-luxury-gold transition-all duration-300 bg-luxury-gray">
         <Image
-          src={drama.coverWap}
+          src={drama.coverWap || "/window.svg"}
           alt={drama.bookName}
           fill
           className="object-cover transition-opacity duration-300 group-hover:opacity-80"

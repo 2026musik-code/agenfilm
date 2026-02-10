@@ -5,11 +5,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'hwztchapter.dramaboxdb.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'magma-api.biz.id',
+        hostname: '**',
       },
     ],
   },

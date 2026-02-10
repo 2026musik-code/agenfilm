@@ -66,7 +66,7 @@ export default function Player({ drama, episodes }: PlayerProps) {
                   ref={videoRef}
                   controls
                   className="w-full h-full object-contain bg-black"
-                  poster={drama.coverWap}
+                  poster={drama.coverWap || "/window.svg"}
                   preload="metadata"
                   playsInline
                >
@@ -160,7 +160,7 @@ export default function Player({ drama, episodes }: PlayerProps) {
                 >
                     <div className="relative w-16 aspect-video rounded bg-black/50 overflow-hidden flex-shrink-0">
                          <Image
-                           src={drama.coverWap}
+                           src={drama.coverWap || "/window.svg"}
                            alt={`Ep ${index + 1}`}
                            fill
                            className={`object-cover ${currentEpisodeIndex === index ? 'opacity-100' : 'opacity-60 group-hover:opacity-80'}`}

@@ -2,19 +2,44 @@ import { fetchDramaDetails, fetchEpisodes } from '@/lib/api';
 import Navbar from '@/components/Navbar';
 import Player from '@/components/Player';
 import { Play, Info, Share2, Plus } from 'lucide-react';
+import { Drama } from '@/types/drama';
 
-export default async function DramaPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function DramaPage({
+  params,
+  searchParams
+}: {
+  params: Promise<{ id: string }>,
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
   const { id } = await params;
+  const sp = await searchParams;
 
-  const [drama, episodes] = await Promise.all([
+  const title = typeof sp.title === 'string' ? sp.title : undefined;
+  const cover = typeof sp.cover === 'string' ? sp.cover : undefined;
+  const intro = typeof sp.intro === 'string' ? sp.intro : undefined;
+
+  let [drama, episodes] = await Promise.all([
     fetchDramaDetails(id),
     fetchEpisodes(id)
   ]);
+
+  // Fallback: If drama is not found in lists but we found episodes (e.g. from search)
+  if (!drama && episodes.length > 0) {
+    drama = {
+        bookId: id,
+        bookName: title || `Drama ${id}`,
+        coverWap: cover || (episodes[0].chapterImg || "/window.svg"),
+        introduction: intro || "Description not available.",
+        chapterCount: episodes.length,
+        playCount: "0",
+    } as Drama;
+  }
 
   if (!drama) {
     return (
       <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center">
         <h1 className="text-4xl font-bold mb-4 font-serif text-luxury-gold">Drama Not Found</h1>
+        <p className="text-gray-400">Unable to load drama details.</p>
       </div>
     );
   }
@@ -40,7 +65,7 @@ export default async function DramaPage({ params }: { params: Promise<{ id: stri
             <div className="flex items-center space-x-4 text-[10px] md:text-sm text-gray-400">
                 <span className="bg-white/10 px-2 py-0.5 rounded text-white font-semibold">HD</span>
                 <span>{drama.chapterCount || episodes.length} Episodes</span>
-                <span className="flex items-center"><Play size={12} className="mr-1" /> {drama.playCount} views</span>
+                <span className="flex items-center"><Play size={12} className="mr-1" /> {drama.playCount || 0} views</span>
             </div>
 
             <p className="text-gray-300 text-xs md:text-base leading-relaxed line-clamp-3 md:line-clamp-none">

@@ -58,6 +58,7 @@ export interface Episode {
   isCharge: number;
   chapterName: string;
   cdnList: CdnItem[];
+  chapterImg?: string;
 }
 
 export interface EpisodeResponse {
