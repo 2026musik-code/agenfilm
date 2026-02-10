@@ -12,3 +12,11 @@
  GET /admin 200 in 2.6s (compile: 1974ms, proxy.ts: 93ms, render: 523ms)
  GET /api/users 200 in 974ms (compile: 963ms, render: 11ms)
  GET /api/visitor-info 200 in 933ms (compile: 731ms, render: 202ms)
+ POST /api/admin/login 200 in 441ms (compile: 346ms, render: 95ms)
+Database loaded from disk.
+ POST /api/settings 200 in 520ms (compile: 360ms, render: 160ms)
+Paymenku API Error: {
+  status: 'error',
+  message: 'Unauthorized. Invalid API Key format. Use sk_live_* or sk_test_*'
+}
+ POST /api/register 200 in 1657ms (compile: 617ms, render: 1040ms)

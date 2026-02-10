@@ -28,7 +28,15 @@ export default function RegisterPage() {
         body: JSON.stringify(formData),
       });
 
-      const data = await res.json();
+      let data;
+      try {
+          data = await res.json();
+      } catch (jsonError) {
+          console.error("JSON Parse Error:", jsonError);
+          setError("Server returned invalid response");
+          setLoading(false);
+          return;
+      }
 
       if (res.ok) {
         setUser(data.user);
@@ -37,7 +45,8 @@ export default function RegisterPage() {
         setError(data.error || 'Registration failed');
       }
     } catch (e) {
-      setError('Network error');
+      console.error("Network Error:", e);
+      setError('Network error. Please check your connection.');
     } finally {
       setLoading(false);
     }
@@ -138,6 +147,7 @@ export default function RegisterPage() {
               <h2 className="text-2xl font-bold font-serif text-white mb-6">Complete Payment</h2>
 
               <div className="bg-white p-4 rounded-xl inline-block mb-6 shadow-lg mx-auto">
+                 {/* Safety check: Ensure user.qrUrl is defined before rendering Image */}
                  {user.qrUrl ? (
                     <div className="relative w-48 h-48">
                          <Image

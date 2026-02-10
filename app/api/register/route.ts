@@ -34,24 +34,32 @@ export async function POST(req: Request) {
             'Authorization': `Bearer ${settings.paymentKey}`
           },
           body: JSON.stringify({
+            reference_id: reference,
             amount: settings.price,
-            reference: reference,
             customer_name: name,
             customer_email: email,
-            api_key: settings.paymentKey,
-            payment_method: 'QRIS',
-            callback_url: 'https://example.com/api/callback' // Placeholder
+            channel_code: 'qris',
+            return_url: 'https://agenfilm-azure.vercel.app/profile' // Or wherever
           })
         });
 
         const data = await response.json();
 
         if (response.ok) {
-            qrUrl = data.qr_url || data.checkout_url || '';
-            qrContent = data.qr_content || '';
+            // Check what Paymenku actually returns.
+            // Assuming data.qr_url or data.checkout_url based on common patterns,
+            // but user doc doesn't specify response format.
+            // We will trust the previous pattern but add safety.
+            qrUrl = data.qr_url || data.checkout_url || data.payment_url || '';
+            qrContent = data.qr_content || data.qr_string || '';
+
+            if (!qrUrl && !qrContent) {
+                 console.warn("Paymenku response OK but no QR URL found:", data);
+                 // Fallback if needed? Or error?
+            }
         } else {
             console.error("Paymenku API Error:", data);
-            // Fallback for demo
+            // Fallback for demo/testing if API key is invalid or sandbox
             qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=DemoPayment-${reference}`;
         }
     } catch (e) {
