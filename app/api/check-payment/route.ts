@@ -12,7 +12,7 @@ export async function POST(req: Request) {
 
     // In a real scenario, we would check Paymenku API status here
     // For now, we simulate success
-    const pin = Math.floor(100000 + Math.random() * 900000).toString();
+    const pin = Math.floor(100000 + Math.random() * 900000).toString().trim();
 
     await updateUserPayment(id, 'paid', pin);
 

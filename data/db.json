@@ -67,6 +67,26 @@
       "qrCode": "",
       "qrUrl": "",
       "createdAt": "2026-02-10T13:40:33.463Z"
+    },
+    {
+      "id": "MANUAL-1770734293755",
+      "name": "Repro User",
+      "email": "repro@test.com",
+      "pin": "998877",
+      "paymentStatus": "paid",
+      "qrCode": "",
+      "qrUrl": "",
+      "createdAt": "2026-02-10T14:38:13.756Z"
+    },
+    {
+      "id": "MANUAL-1770734423465",
+      "name": "Repro User",
+      "email": "repro@test.com",
+      "pin": "998877",
+      "paymentStatus": "paid",
+      "qrCode": "",
+      "qrUrl": "",
+      "createdAt": "2026-02-10T14:40:23.466Z"
     }
   ],
   "settings": {

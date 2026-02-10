@@ -28,11 +28,9 @@ async function initDb() {
     // Try to load from disk
     const data = await fs.readFile(DB_PATH, 'utf-8');
     inMemoryDb = JSON.parse(data);
-    console.log('Database loaded from disk.');
+    console.log(`Database loaded from disk. Users: ${inMemoryDb.users.length}`);
   } catch (error) {
-    console.warn('Could not load database from disk (this is expected on Vercel if file does not exist). Using in-memory store initialized with Environment Variables.');
-
-    // If running locally, try to create the file so we can save changes
+    console.warn('Could not load database from disk. Using in-memory store.');
     if (!process.env.VERCEL) {
         try {
             await fs.mkdir(path.dirname(DB_PATH), { recursive: true });
@@ -60,7 +58,7 @@ async function saveDb(db: Database) {
   try {
     await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2));
   } catch (error) {
-    console.warn('Failed to save database to disk (expected on Vercel). Data will be lost on restart.');
+    console.warn('Failed to save database to disk.');
   }
 }
 
@@ -84,6 +82,7 @@ export async function getUsers(): Promise<User[]> {
 
 export async function addUser(user: User) {
   const db = await getDb();
+  console.log(`Adding user: ${user.name} (${user.id})`);
   db.users.push(user);
   await saveDb(db);
 }

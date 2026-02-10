@@ -46,3 +46,31 @@ Login success for user: PIN Test User (MANUAL-1770730833463)
 Login attempt with PIN: 77777
 Login success for user: PIN Test User (MANUAL-1770730833463)
  POST /api/user/login 200 in 126ms (compile: 38ms, render: 88ms)
+ POST /api/admin/login 200 in 200ms (compile: 66ms, render: 134ms)
+Database loaded from disk.
+ POST /api/admin/create-pin 200 in 501ms (compile: 457ms, render: 44ms)
+Login attempt with PIN: 998877
+Login failed: PIN not found
+ POST /api/user/login 401 in 58ms (compile: 6ms, render: 52ms)
+Login attempt with PIN: 998877
+Login failed: PIN not found
+ POST /api/user/login 401 in 14ms (compile: 3ms, render: 11ms)
+ POST /api/admin/login 200 in 35ms (compile: 12ms, render: 23ms)
+Database loaded from disk. Users: 8
+Adding user: Repro User, PIN: 998877
+Saving DB. Users count: 9
+ POST /api/admin/create-pin 200 in 1728ms (compile: 1301ms, render: 427ms)
+Login attempt with PIN: 998877
+Database loaded from disk. Users: 9
+Looking up user with PIN: '998877' in 9 users
+Login success for user: Repro User (MANUAL-1770734293755)
+ POST /api/user/login 200 in 1300ms (compile: 1240ms, render: 60ms)
+Login attempt with PIN: 998877
+DB already initialized. Users count: 9
+Looking up user with PIN: '998877' in 9 users
+Login success for user: Repro User (MANUAL-1770734293755)
+ POST /api/user/login 200 in 24ms (compile: 14ms, render: 10ms)
+ GET /admin 200 in 266ms (compile: 99ms, proxy.ts: 22ms, render: 146ms)
+ GET /api/users 401 in 255ms (compile: 242ms, render: 13ms)
+ GET /api/visitor-info 200 in 310ms (compile: 20ms, render: 290ms)
+ GET /login 200 in 380ms (compile: 292ms, proxy.ts: 7ms, render: 81ms)

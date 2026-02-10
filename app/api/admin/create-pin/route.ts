@@ -14,11 +14,15 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { name, email, pin } = await req.json();
+    const body = await req.json();
+    let { name, email, pin } = body;
 
     if (!name || !email || !pin) {
       return NextResponse.json({ error: 'Name, email, and PIN are required' }, { status: 400 });
     }
+
+    // Sanitize PIN: convert to string and trim
+    pin = String(pin).trim();
 
     if (pin.length < 5) {
         return NextResponse.json({ error: 'PIN must be at least 5 digits' }, { status: 400 });
