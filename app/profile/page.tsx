@@ -1,37 +1,16 @@
-'use client';
-
-import { useEffect, useState } from 'react';
+import { validateSession } from '@/lib/auth';
 import Navbar from '@/components/Navbar';
-import { useRouter } from 'next/navigation';
-import { User } from '@/types/user';
-import { LogOut, User as UserIcon, Lock, CheckCircle, Mail, QrCode } from 'lucide-react';
+import LogoutButton from '@/components/LogoutButton';
+import { User as UserIcon, Lock, CheckCircle, Mail, QrCode } from 'lucide-react';
 import Image from 'next/image';
 
-export default function ProfilePage() {
-  const [user, setUser] = useState<User | null>(null);
-  const router = useRouter();
-
-  useEffect(() => {
-    const savedUser = localStorage.getItem('user');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    } else {
-      router.push('/login');
-    }
-  }, [router]);
-
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-luxury-black flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-luxury-gold border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
-  }
+export default async function ProfilePage() {
+  const user = await validateSession();
+  const userLogo = user.logo || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=d4af37&color=000`;
 
   return (
     <div className="min-h-screen bg-luxury-black text-white font-sans">
       <Navbar />
-
       <main className="container mx-auto px-4 py-32 flex justify-center items-start min-h-[80vh]">
         <div className="w-full max-w-2xl bg-gray-900/80 backdrop-blur-xl border border-luxury-gold/30 rounded-2xl p-8 shadow-2xl relative overflow-hidden">
 
@@ -40,19 +19,13 @@ export default function ProfilePage() {
 
            <div className="relative z-10 flex flex-col md:flex-row items-center md:items-end -mt-10 md:-mt-10 mb-8 space-y-4 md:space-y-0 md:space-x-6">
                 <div className="w-32 h-32 rounded-full border-4 border-luxury-black bg-black shadow-xl overflow-hidden relative">
-                    {user.logo ? (
-                        <Image
-                            src={user.logo}
-                            alt={user.name}
-                            fill
-                            className="object-cover"
-                            unoptimized
-                        />
-                    ) : (
-                        <div className="w-full h-full bg-gray-800 flex items-center justify-center">
-                            <UserIcon size={48} className="text-gray-500" />
-                        </div>
-                    )}
+                    <Image
+                        src={userLogo}
+                        alt={user.name}
+                        fill
+                        className="object-cover"
+                        unoptimized
+                    />
                 </div>
 
                 <div className="text-center md:text-left pb-2 flex-1">
@@ -62,15 +35,7 @@ export default function ProfilePage() {
                     </p>
                 </div>
 
-                <button
-                    onClick={() => {
-                        localStorage.removeItem('user');
-                        router.push('/login');
-                    }}
-                    className="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 px-4 py-2 rounded-lg transition-colors flex items-center text-sm font-medium"
-                >
-                    <LogOut size={16} className="mr-2" /> Logout
-                </button>
+                <LogoutButton />
            </div>
 
            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">

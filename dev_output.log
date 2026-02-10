@@ -2,12 +2,13 @@
 > temp-app@0.1.0 dev
 > next dev
 
-⚠ Port 3000 is in use by an unknown process, using available port 3001 instead.
 ▲ Next.js 16.1.6 (Turbopack)
-- Local:         http://localhost:3001
-- Network:       http://192.168.0.2:3001
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
 
 ✓ Starting...
-⨯ Unable to acquire lock at /app/.next/dev/lock, is another instance of next dev running?
-  Suggestion: If you intended to restart next dev, terminate the other process, and then try again.
-[?25h
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+✓ Ready in 1494ms
+ GET /admin 200 in 2.6s (compile: 1974ms, proxy.ts: 93ms, render: 523ms)
+ GET /api/users 200 in 974ms (compile: 963ms, render: 11ms)
+ GET /api/visitor-info 200 in 933ms (compile: 731ms, render: 202ms)

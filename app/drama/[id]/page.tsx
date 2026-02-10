@@ -1,4 +1,5 @@
 import { fetchDramaDetails, fetchEpisodes } from '@/lib/api';
+import { validateSession } from '@/lib/auth';
 import Navbar from '@/components/Navbar';
 import Player from '@/components/Player';
 import { Play, Info, Share2, Plus } from 'lucide-react';
@@ -11,6 +12,8 @@ export default async function DramaPage({
   params: Promise<{ id: string }>,
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
+  await validateSession();
+
   const { id } = await params;
   const sp = await searchParams;
 

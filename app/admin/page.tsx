@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 import { User, Settings } from '@/types/user';
-import { Lock, CreditCard, Users, Save, RefreshCw } from 'lucide-react';
+import { Lock, CreditCard, Users, Save, RefreshCw, Trash2 } from 'lucide-react';
 
 interface VisitorInfo {
   ip: string;
@@ -158,6 +158,27 @@ export default function AdminPage() {
     } catch (e) {
         alert('Failed to create manual user');
     }
+  };
+
+  const handleDeleteUser = async (id: string, name: string) => {
+      if (!confirm(`Are you sure you want to delete user "${name}"? They will lose access immediately.`)) {
+          return;
+      }
+
+      try {
+          const res = await fetch(`/api/users/${id}`, {
+              method: 'DELETE',
+          });
+
+          if (res.ok) {
+              fetchData();
+          } else {
+              const data = await res.json();
+              alert('Error: ' + data.error);
+          }
+      } catch (e) {
+          alert('Failed to delete user');
+      }
   };
 
   if (!isAuthenticated && !loading) {
@@ -331,12 +352,13 @@ export default function AdminPage() {
                                     <th className="py-3 px-2">Status</th>
                                     <th className="py-3 px-2">PIN</th>
                                     <th className="py-3 px-2">Joined</th>
+                                    <th className="py-3 px-2 text-right">Action</th>
                                 </tr>
                             </thead>
                             <tbody className="text-sm">
                                 {users.length === 0 ? (
                                     <tr>
-                                        <td colSpan={5} className="py-8 text-center text-gray-500">No users found.</td>
+                                        <td colSpan={6} className="py-8 text-center text-gray-500">No users found.</td>
                                     </tr>
                                 ) : (
                                     users.map((user) => (
@@ -359,6 +381,15 @@ export default function AdminPage() {
                                             </td>
                                             <td className="py-3 px-2 text-gray-500 text-xs">
                                                 {new Date(user.createdAt).toLocaleDateString()}
+                                            </td>
+                                            <td className="py-3 px-2 text-right">
+                                                <button
+                                                    onClick={() => handleDeleteUser(user.id, user.name)}
+                                                    className="p-1.5 bg-red-500/10 text-red-400 rounded hover:bg-red-500 hover:text-white transition-all"
+                                                    title="Delete User"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
                                             </td>
                                         </tr>
                                     ))

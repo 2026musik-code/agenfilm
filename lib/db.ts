@@ -87,6 +87,17 @@ export async function addUser(user: User) {
   await saveDb(db);
 }
 
+export async function deleteUser(id: string) {
+    const db = await getDb();
+    const index = db.users.findIndex(u => u.id === id);
+    if (index !== -1) {
+        db.users.splice(index, 1);
+        await saveDb(db);
+        return true;
+    }
+    return false;
+}
+
 export async function updateUserPayment(id: string, status: 'paid' | 'failed', pin?: string, qrCode?: string) {
   const db = await getDb();
   const index = db.users.findIndex(u => u.id === id);

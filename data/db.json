@@ -19,6 +19,26 @@
       "qrCode": "",
       "qrUrl": "",
       "createdAt": "2026-02-10T07:53:59.131Z"
+    },
+    {
+      "id": "MANUAL-1770713621724",
+      "name": "Delete Test User",
+      "email": "delete@test.com",
+      "pin": "88888",
+      "paymentStatus": "paid",
+      "qrCode": "",
+      "qrUrl": "",
+      "createdAt": "2026-02-10T08:53:41.724Z"
+    },
+    {
+      "id": "MANUAL-1770713876783",
+      "name": "Delete Test User",
+      "email": "delete@test.com",
+      "pin": "88888",
+      "paymentStatus": "paid",
+      "qrCode": "",
+      "qrUrl": "",
+      "createdAt": "2026-02-10T08:57:56.783Z"
     }
   ],
   "settings": {

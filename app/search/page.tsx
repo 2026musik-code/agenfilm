@@ -1,4 +1,5 @@
 import { fetchSearch, fetchPopularSearch } from '@/lib/api';
+import { validateSession } from '@/lib/auth';
 import Navbar from '@/components/Navbar';
 import MovieCard from '@/components/MovieCard';
 import { Search } from 'lucide-react';
@@ -8,6 +9,8 @@ export default async function SearchPage({
 }: {
   searchParams: Promise<{ q?: string }>;
 }) {
+  await validateSession();
+
   const { q } = await searchParams;
   const query = q || '';
 

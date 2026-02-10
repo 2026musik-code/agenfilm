@@ -1,10 +1,13 @@
 import { DramaColumn } from "@/types/drama";
 import { fetchVIP, fetchList, fetchDubIndoList } from '@/lib/api';
+import { validateSession } from '@/lib/auth';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import Section from '@/components/Section';
 
 export default async function Home() {
+  await validateSession();
+
   const [
     vipData,
     latestData,
