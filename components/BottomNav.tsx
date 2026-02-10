@@ -10,7 +10,7 @@ export default function BottomNav() {
     { name: 'Home', href: '/', icon: Home },
     { name: 'Explore', href: '/search', icon: Compass },
     { name: 'Search', href: '/search', icon: Search },
-    { name: 'Profile', href: '#', icon: User }, // Placeholder
+    { name: 'Profile', href: '/profile', icon: User },
   ];
 
   return (

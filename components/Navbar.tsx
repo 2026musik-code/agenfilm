@@ -85,9 +85,9 @@ export default function Navbar() {
             <Bell size={24} />
           </button>
 
-          <button className="text-white hover:text-luxury-gold transition-colors hidden md:block" aria-label="User Profile">
+          <Link href="/profile" className="text-white hover:text-luxury-gold transition-colors hidden md:block" aria-label="User Profile">
             <User size={24} />
-          </button>
+          </Link>
         </div>
       </div>
     </nav>
