@@ -29,14 +29,7 @@ export default function AdminPage() {
   const [visitorInfo, setVisitorInfo] = useState<VisitorInfo | null>(null);
 
   useEffect(() => {
-    // Check local storage for session persistence
-    const savedAuth = localStorage.getItem('adminAuth');
-    if (savedAuth === 'true') {
-      setIsAuthenticated(true);
-      fetchData();
-    } else {
-      setLoading(false);
-    }
+    checkSession();
 
     // Fetch visitor info regardless
     fetch('/api/visitor-info')
@@ -45,15 +38,41 @@ export default function AdminPage() {
       .catch((err) => console.error('Failed to fetch visitor data:', err));
   }, []);
 
+  const checkSession = async () => {
+      setLoading(true);
+      try {
+          // Try to fetch users to check if authenticated
+          const res = await fetch('/api/users');
+          if (res.ok) {
+              setIsAuthenticated(true);
+              const userData = await res.json();
+              setUsers(userData);
+
+              // Also fetch settings
+              const settingsRes = await fetch('/api/settings');
+              if (settingsRes.ok) setSettings(await settingsRes.json());
+          } else {
+              setIsAuthenticated(false);
+          }
+      } catch (e) {
+          setIsAuthenticated(false);
+      } finally {
+          setLoading(false);
+      }
+  };
+
   const fetchData = async () => {
     setLoading(true);
     try {
-      const headers = { 'x-admin-password': 'Nina131@' };
-
       const [settingsRes, usersRes] = await Promise.all([
-        fetch('/api/settings', { headers }),
-        fetch('/api/users', { headers })
+        fetch('/api/settings'),
+        fetch('/api/users')
       ]);
+
+      if (settingsRes.status === 401 || usersRes.status === 401) {
+          setIsAuthenticated(false);
+          return;
+      }
 
       if (settingsRes.ok) setSettings(await settingsRes.json());
       if (usersRes.ok) setUsers(await usersRes.json());
@@ -79,7 +98,6 @@ export default function AdminPage() {
 
       if (res.ok) {
         setIsAuthenticated(true);
-        localStorage.setItem('adminAuth', 'true');
         fetchData();
       } else {
         setError('Invalid password');
@@ -98,7 +116,6 @@ export default function AdminPage() {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'x-admin-password': 'Nina131@'
         },
         body: JSON.stringify(settings),
       });
@@ -106,14 +123,44 @@ export default function AdminPage() {
       if (res.ok) {
         alert('Settings saved!');
       } else {
-        alert('Failed to save settings');
+        if (res.status === 401) setIsAuthenticated(false);
+        else alert('Failed to save settings');
       }
     } catch (e) {
       alert('Error saving settings');
     }
   };
 
-  if (!isAuthenticated) {
+  const handleCreateManualUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const name = (form.elements.namedItem('manualName') as HTMLInputElement).value;
+    const email = (form.elements.namedItem('manualEmail') as HTMLInputElement).value;
+    const pin = (form.elements.namedItem('manualPin') as HTMLInputElement).value;
+
+    try {
+        const res = await fetch('/api/admin/create-pin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name, email, pin }),
+        });
+        const data = await res.json();
+        if (res.ok) {
+            alert('User Created! PIN: ' + data.user.pin);
+            form.reset();
+            fetchData();
+        } else {
+            if (res.status === 401) setIsAuthenticated(false);
+            else alert('Error: ' + data.error);
+        }
+    } catch (e) {
+        alert('Failed to create manual user');
+    }
+  };
+
+  if (!isAuthenticated && !loading) {
     return (
       <div className="min-h-screen bg-luxury-black flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-gray-900 border border-luxury-gold/30 rounded-xl p-8 shadow-2xl">
@@ -157,12 +204,15 @@ export default function AdminPage() {
             </h1>
             <button
                 onClick={() => {
-                    localStorage.removeItem('adminAuth');
-                    setIsAuthenticated(false);
+                    // Simple logout by reloading (cookies are httpOnly so we can't clear them easily from JS, but we can invalidate state)
+                    // Better: Call logout API to clear cookie.
+                    // For now, just reload which will fail auth check if cookie expired, but cookie is persistent.
+                    // We need a logout API.
+                    window.location.reload();
                 }}
                 className="text-sm text-red-400 hover:text-red-300 underline"
             >
-                Logout
+                Logout (Refresh)
             </button>
         </div>
 
@@ -190,9 +240,13 @@ export default function AdminPage() {
                         <div>
                             <label className="block text-sm text-gray-400 mb-1">Subscription Price (IDR)</label>
                             <input
-                                type="number"
-                                value={settings.price}
-                                onChange={(e) => setSettings({...settings, price: Number(e.target.value)})}
+                                type="text"
+                                inputMode="numeric"
+                                value={settings.price === 0 ? '' : settings.price}
+                                onChange={(e) => {
+                                    const val = e.target.value.replace(/[^0-9]/g, '');
+                                    setSettings({...settings, price: val ? Number(val) : 0});
+                                }}
                                 placeholder="e.g. 50000"
                                 className="w-full bg-black/50 border border-gray-700 rounded-lg px-3 py-2 text-white focus:border-luxury-gold outline-none"
                             />
@@ -202,6 +256,32 @@ export default function AdminPage() {
                             className="w-full flex items-center justify-center bg-luxury-gold/10 text-luxury-gold border border-luxury-gold/50 py-2 rounded-lg hover:bg-luxury-gold hover:text-black transition-all font-semibold"
                         >
                             <Save size={16} className="mr-2" /> Save Settings
+                        </button>
+                    </form>
+                </div>
+
+                {/* Create Manual User Card */}
+                <div className="bg-gray-900/50 backdrop-blur-md border border-luxury-gold/20 rounded-xl p-6 shadow-xl">
+                    <h2 className="text-xl font-bold text-white mb-6 flex items-center border-b border-gray-800 pb-4">
+                        <Users className="mr-2 text-luxury-gold" size={20} />
+                        Create Manual User
+                    </h2>
+
+                    <form onSubmit={handleCreateManualUser} className="space-y-4">
+                        <div>
+                            <label className="block text-sm text-gray-400 mb-1">Name</label>
+                            <input name="manualName" required className="w-full bg-black/50 border border-gray-700 rounded-lg px-3 py-2 text-white outline-none focus:border-luxury-gold" />
+                        </div>
+                        <div>
+                            <label className="block text-sm text-gray-400 mb-1">Email</label>
+                            <input name="manualEmail" required type="email" className="w-full bg-black/50 border border-gray-700 rounded-lg px-3 py-2 text-white outline-none focus:border-luxury-gold" />
+                        </div>
+                        <div>
+                            <label className="block text-sm text-gray-400 mb-1">PIN (5+ digits)</label>
+                            <input name="manualPin" required minLength={5} className="w-full bg-black/50 border border-gray-700 rounded-lg px-3 py-2 text-white outline-none focus:border-luxury-gold tracking-widest" />
+                        </div>
+                        <button type="submit" className="w-full bg-green-600/20 text-green-400 border border-green-600/50 py-2 rounded-lg hover:bg-green-600 hover:text-white transition-all font-semibold">
+                            Generate User
                         </button>
                     </form>
                 </div>

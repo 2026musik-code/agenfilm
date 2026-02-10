@@ -1,61 +1,62 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// Simple in-memory blocklist (for demonstration)
-const BLOCKED_IPS = ['1.2.3.4'];
-const BLOCKED_COUNTRIES = ['XX']; // Use ISO 3166-1 alpha-2 country codes
+// 1. Define routes that are always public
+const PUBLIC_FILE_EXTENSIONS = ['.ico', '.svg', '.png', '.jpg', '.jpeg', '.webp'];
+
+const PUBLIC_ROUTES = [
+  '/login',
+  '/daftar',
+  '/admin', // Admin has its own auth
+];
 
 export function middleware(request: NextRequest) {
-  // 1. Extract Visitor Data
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || '127.0.0.1';
-  const userAgent = request.headers.get('user-agent') || 'Unknown';
+  const { pathname } = request.nextUrl;
 
-  // Vercel GeoIP headers or fallback
-  // Note: request.geo is not reliably typed in all Next.js versions/environments, using headers is safer for Vercel.
-  const country = request.headers.get('x-vercel-ip-country') || 'Unknown';
-  const city = request.headers.get('x-vercel-ip-city') || 'Unknown';
-  const referer = request.headers.get('referer') || 'Direct';
-
-  // 2. Log Visitor Data (Visible in Vercel Logs)
-  console.log(`[Visitor] IP: ${ip} | Country: ${country} | City: ${city} | UA: ${userAgent} | Ref: ${referer}`);
-
-  // 3. Blocking Logic
-  const isBlockedIP = BLOCKED_IPS.includes(ip);
-  const isBlockedCountry = BLOCKED_COUNTRIES.includes(country);
-
-  if (isBlockedIP || isBlockedCountry) {
-    return new NextResponse(
-      JSON.stringify({ success: false, message: 'Access Denied. Your IP or Region is blocked.' }),
-      { status: 403, headers: { 'content-type': 'application/json' } }
-    );
+  // 2. Allow API routes (they handle their own auth or are public)
+  if (pathname.startsWith('/api')) {
+      return NextResponse.next();
   }
 
-  // 4. Pass data to headers for downstream consumption
-  const response = NextResponse.next();
-  response.headers.set('x-visitor-ip', ip);
-  response.headers.set('x-visitor-country', country);
-  response.headers.set('x-visitor-city', city);
+  // 3. Allow Next.js internals and static assets
+  if (
+      pathname.startsWith('/_next') ||
+      PUBLIC_FILE_EXTENSIONS.some(ext => pathname.endsWith(ext))
+  ) {
+      return NextResponse.next();
+  }
 
-  const region = request.headers.get('x-vercel-ip-region');
-  if (region) response.headers.set('x-visitor-region', region);
+  // 4. Check if the current route is public
+  const isPublic = PUBLIC_ROUTES.some(route => pathname === route || pathname.startsWith(route + '/'));
 
-  const latitude = request.headers.get('x-vercel-ip-latitude');
-  if (latitude) response.headers.set('x-visitor-latitude', latitude);
+  // 5. Check for user session cookie
+  const hasSession = request.cookies.has('user_session');
 
-  const longitude = request.headers.get('x-vercel-ip-longitude');
-  if (longitude) response.headers.set('x-visitor-longitude', longitude);
+  // 6. Redirect Logic
 
-  return response;
+  // If trying to access a protected route without session -> Redirect to Login
+  if (!isPublic && !hasSession) {
+    const loginUrl = new URL('/login', request.url);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  // If accessing Login/Register while logged in -> Redirect to Home
+  if ((pathname === '/login' || pathname === '/daftar') && hasSession) {
+     return NextResponse.redirect(new URL('/', request.url));
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {
   matcher: [
     /*
      * Match all request paths except for the ones starting with:
+     * - api (API routes)
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      */
-    '/((?!_next/static|_next/image|favicon.ico).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 };

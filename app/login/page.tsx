@@ -33,7 +33,9 @@ export default function LoginPage() {
 
         // Use Framer Motion for success animation if desired, but here just redirect
         setTimeout(() => {
-             router.push('/profile');
+             // Redirect to HOME now as requested (content is locked)
+             router.push('/');
+             router.refresh(); // Refresh to ensure middleware picks up cookie? Cookie is set by API.
         }, 500);
       } else {
         setError(data.error || 'Login failed');

@@ -1,0 +1,28 @@
+{
+  "users": [
+    {
+      "id": "MANUAL-1770709461931",
+      "name": "Manual User",
+      "email": "manual@test.com",
+      "pin": "99999",
+      "paymentStatus": "paid",
+      "qrCode": "",
+      "qrUrl": "",
+      "createdAt": "2026-02-10T07:44:21.931Z"
+    },
+    {
+      "id": "MANUAL-1770710039131",
+      "name": "Refactor Test User",
+      "email": "refactor@test.com",
+      "pin": "99999",
+      "paymentStatus": "paid",
+      "qrCode": "",
+      "qrUrl": "",
+      "createdAt": "2026-02-10T07:53:59.131Z"
+    }
+  ],
+  "settings": {
+    "paymentKey": "",
+    "price": 0
+  }
+}

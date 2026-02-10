@@ -12,31 +12,55 @@ interface Database {
 const DEFAULT_DB: Database = {
   users: [],
   settings: {
-    paymentKey: "", // API Key for Paymenku
+    paymentKey: "",
     price: 0
   }
 };
 
-// Helper to ensure DB file exists
-async function ensureDb() {
+// In-memory store
+let inMemoryDb: Database = { ...DEFAULT_DB };
+let isInitialized = false;
+
+async function initDb() {
+  if (isInitialized) return;
+
   try {
-    await fs.access(DB_PATH);
-  } catch {
-    await fs.mkdir(path.dirname(DB_PATH), { recursive: true });
-    await fs.writeFile(DB_PATH, JSON.stringify(DEFAULT_DB, null, 2));
+    // Try to load from disk
+    const data = await fs.readFile(DB_PATH, 'utf-8');
+    inMemoryDb = JSON.parse(data);
+    console.log('Database loaded from disk.');
+  } catch (error) {
+    console.warn('Could not load database from disk (this is expected on Vercel if file does not exist). Using in-memory store.');
+    // If running locally, try to create the file
+    if (!process.env.VERCEL) {
+        try {
+            await fs.mkdir(path.dirname(DB_PATH), { recursive: true });
+            await fs.writeFile(DB_PATH, JSON.stringify(DEFAULT_DB, null, 2));
+        } catch (e) {
+            console.warn('Failed to initialize DB file:', e);
+        }
+    }
   }
+  isInitialized = true;
 }
 
-// Read DB
-export async function getDb(): Promise<Database> {
-  await ensureDb();
-  const data = await fs.readFile(DB_PATH, 'utf-8');
-  return JSON.parse(data);
+// Get DB (Helper)
+async function getDb(): Promise<Database> {
+  await initDb();
+  return inMemoryDb;
 }
 
-// Write DB
+// Save DB (Helper)
 async function saveDb(db: Database) {
-  await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2));
+  // Update in-memory
+  inMemoryDb = db;
+
+  // Try to persist to disk
+  try {
+    await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2));
+  } catch (error) {
+    console.warn('Failed to save database to disk (expected on Vercel). Data will be lost on restart.');
+  }
 }
 
 // Settings API

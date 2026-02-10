@@ -1,11 +1,15 @@
 import { NextResponse } from 'next/server';
 import { getUsers } from '@/lib/db';
+import { cookies } from 'next/headers';
 
-const ADMIN_PASSWORD = 'Nina131@';
+async function isAuthenticated() {
+    const cookieStore = await cookies();
+    const session = cookieStore.get('admin_session');
+    return session?.value === 'authenticated';
+}
 
 export async function GET(req: Request) {
-  const authHeader = req.headers.get('x-admin-password');
-  if (authHeader !== ADMIN_PASSWORD) {
+  if (!await isAuthenticated()) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
