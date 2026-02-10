@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 import { User } from '@/types/user';
-import { ArrowRight, QrCode, CheckCircle, Copy, AlertTriangle } from 'lucide-react';
+import { ArrowRight, QrCode, CheckCircle, Copy, AlertTriangle, ExternalLink } from 'lucide-react';
 import Image from 'next/image';
 
 export default function RegisterPage() {
@@ -15,6 +15,7 @@ export default function RegisterPage() {
   const [formData, setFormData] = useState({ name: '', email: '' });
   const [user, setUser] = useState<User | null>(null);
   const [generatedPin, setGeneratedPin] = useState('');
+  const [qrImageError, setQrImageError] = useState(false);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -146,9 +147,9 @@ export default function RegisterPage() {
             <div className="text-center animate-in fade-in zoom-in-95 duration-500">
               <h2 className="text-2xl font-bold font-serif text-white mb-6">Complete Payment</h2>
 
-              <div className="bg-white p-4 rounded-xl inline-block mb-6 shadow-lg mx-auto">
+              <div className="bg-white p-4 rounded-xl inline-block mb-6 shadow-lg mx-auto overflow-hidden">
                  {/* Safety check: Ensure user.qrUrl is defined before rendering Image */}
-                 {user.qrUrl ? (
+                 {user.qrUrl && !qrImageError ? (
                     <div className="relative w-48 h-48">
                          <Image
                             src={user.qrUrl}
@@ -156,19 +157,33 @@ export default function RegisterPage() {
                             fill
                             className="object-contain"
                             unoptimized
+                            onError={() => setQrImageError(true)}
                          />
                     </div>
                  ) : (
-                    <div className="w-48 h-48 flex items-center justify-center bg-gray-100 text-black">
-                        <QrCode size={48} />
-                        <p className="ml-2">QR Error</p>
+                    <div className="w-48 h-48 flex flex-col items-center justify-center bg-gray-100 text-black p-4 text-center">
+                        <QrCode size={48} className="text-gray-400 mb-2" />
+                        <p className="text-xs font-medium">QR Image Not Available</p>
                     </div>
                  )}
               </div>
 
-              <p className="text-gray-300 text-sm mb-8 px-4">
-                Scan this QR code with your preferred payment app. Once the transaction is successful, click the button below.
-              </p>
+              <div className="px-4 mb-8">
+                <p className="text-gray-300 text-sm mb-4">
+                  Scan the QR code or click the button below to complete your payment securely.
+                </p>
+
+                {user.qrUrl && (
+                    <a
+                        href={user.qrUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center text-luxury-gold hover:text-white underline text-sm font-medium transition-colors mb-4"
+                    >
+                        <ExternalLink size={14} className="mr-1" /> Open Payment Page Directly
+                    </a>
+                )}
+              </div>
 
               <button
                 onClick={checkPayment}

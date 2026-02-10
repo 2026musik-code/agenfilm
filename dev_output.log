@@ -23,3 +23,10 @@ Paymenku API Error: {
  POST /api/admin/login 200 in 195ms (compile: 77ms, render: 118ms)
 Database loaded from disk.
  GET /api/settings 200 in 734ms (compile: 579ms, render: 155ms)
+ GET /daftar 200 in 2.9s (compile: 2.2s, proxy.ts: 186ms, render: 524ms)
+Database loaded from disk.
+Paymenku API Error: {
+  status: 'error',
+  message: 'Unauthorized. Invalid API Key format. Use sk_live_* or sk_test_*'
+}
+ POST /api/register 200 in 1414ms (compile: 200ms, render: 1213ms)
