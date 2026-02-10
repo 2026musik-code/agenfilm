@@ -12,8 +12,8 @@ interface Database {
 const DEFAULT_DB: Database = {
   users: [],
   settings: {
-    paymentKey: "",
-    price: 0
+    paymentKey: process.env.PAYMENKU_API_KEY || "",
+    price: Number(process.env.SUBSCRIPTION_PRICE) || 50000
   }
 };
 
@@ -30,8 +30,9 @@ async function initDb() {
     inMemoryDb = JSON.parse(data);
     console.log('Database loaded from disk.');
   } catch (error) {
-    console.warn('Could not load database from disk (this is expected on Vercel if file does not exist). Using in-memory store.');
-    // If running locally, try to create the file
+    console.warn('Could not load database from disk (this is expected on Vercel if file does not exist). Using in-memory store initialized with Environment Variables.');
+
+    // If running locally, try to create the file so we can save changes
     if (!process.env.VERCEL) {
         try {
             await fs.mkdir(path.dirname(DB_PATH), { recursive: true });
