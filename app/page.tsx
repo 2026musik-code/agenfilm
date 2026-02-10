@@ -1,5 +1,5 @@
 import { DramaColumn } from "@/types/drama";
-import { fetchVIP, fetchList, fetchNetshortList, fetchDubIndoList } from '@/lib/api';
+import { fetchVIP, fetchList, fetchDubIndoList } from '@/lib/api';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import Section from '@/components/Section';
@@ -11,22 +11,19 @@ export default async function Home() {
     trendingData,
     foryouData,
     dubindoData,
-    randomData,
-    netshortForyou,
-    netshortTheaters
+    randomData
   ] = await Promise.all([
     fetchVIP(),
     fetchList('latest'),
     fetchList('trending'),
     fetchList('foryou'),
-    fetchDubIndoList(), // Use the new specific endpoint/params
-    fetchList('random'),
-    fetchNetshortList('foryou'),
-    fetchNetshortList('theaters')
+    fetchDubIndoList(),
+    fetchList('random')
   ]);
 
-  // Determine Hero Drama - prioritize NetShort Theaters for freshness, then Random, then VIP
-  const heroDrama = netshortTheaters?.[0] || randomData?.[0] || vipData?.columnVoList?.[0]?.bookList?.[0];
+  // Determine Hero Drama - prioritize Random, then VIP
+  // Removed NetShort Theaters as requested (no data)
+  const heroDrama = randomData?.[0] || vipData?.columnVoList?.[0]?.bookList?.[0];
 
   return (
     <main className="min-h-screen bg-luxury-black text-white selection:bg-luxury-gold selection:text-black">
@@ -35,24 +32,6 @@ export default async function Home() {
       {heroDrama && <Hero drama={heroDrama} />}
 
       <div className="pb-20 space-y-8 md:space-y-16 -mt-20 relative z-20">
-
-        {/* NetShort Theaters - High Priority */}
-        {netshortTheaters && netshortTheaters.length > 0 && (
-          <Section
-            title="Theaters"
-            subTitle="NetShort Premieres"
-            bookList={netshortTheaters}
-          />
-        )}
-
-        {/* NetShort Recommendations */}
-        {netshortForyou && netshortForyou.length > 0 && (
-          <Section
-            title="NetShort Picks"
-            subTitle="Recommended by NetShort"
-            bookList={netshortForyou}
-          />
-        )}
 
         {/* Render VIP Columns (from original structure) */}
         {vipData?.columnVoList?.map((column: DramaColumn) => (
@@ -65,7 +44,7 @@ export default async function Home() {
           />
         ))}
 
-        {/* Indonesian Dubbed - Prioritized as requested */}
+        {/* Indonesian Dubbed - Prioritized */}
         {dubindoData && dubindoData.length > 0 && (
           <Section
             title="Indonesian Dubbed"
