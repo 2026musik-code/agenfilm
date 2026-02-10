@@ -30,3 +30,11 @@ Paymenku API Error: {
   message: 'Unauthorized. Invalid API Key format. Use sk_live_* or sk_test_*'
 }
  POST /api/register 200 in 1414ms (compile: 200ms, render: 1213ms)
+ POST /api/admin/login 200 in 204ms (compile: 69ms, render: 135ms)
+ POST /api/settings 200 in 67ms (compile: 26ms, render: 41ms)
+Database loaded from disk.
+Paymenku API Error: {
+  status: 'error',
+  message: 'Unauthorized. Invalid API Key format. Use sk_live_* or sk_test_*'
+}
+ POST /api/register 200 in 1468ms (compile: 371ms, render: 1097ms)

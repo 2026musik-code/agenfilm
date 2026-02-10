@@ -38,27 +38,40 @@ export async function POST(req: Request) {
             amount: settings.price,
             customer_name: name,
             customer_email: email,
+            customer_phone: "08123456789", // Added dummy phone as per reference implementation
             channel_code: 'qris',
-            return_url: 'https://agenfilm-azure.vercel.app/profile' // Or wherever
+            return_url: 'https://agenfilm-azure.vercel.app/profile'
           })
         });
 
-        const data = await response.json();
+        const respData = await response.json();
 
         if (response.ok) {
-            // Check what Paymenku actually returns.
-            // Assuming data.qr_url or data.checkout_url based on common patterns,
-            // but user doc doesn't specify response format.
-            // We will trust the previous pattern but add safety.
-            qrUrl = data.qr_url || data.checkout_url || data.payment_url || '';
-            qrContent = data.qr_content || data.qr_string || '';
+            // Updated response parsing logic based on reference repo:
+            // Check success flag
+            // Look for data object
+            // Check pay_url, payment_url, redirect_url
+            // Check nested payment_info
+
+            const data = respData.data || respData;
+
+            qrUrl = data.pay_url || data.payment_url || data.redirect_url || '';
+
+            if (!qrUrl && data.payment_info) {
+                qrUrl = data.payment_info.payment_page || data.payment_info.qr_url || '';
+                qrContent = data.payment_info.qr_content || '';
+            }
+
+            // Also check original logic just in case
+            if (!qrUrl) {
+                 qrUrl = data.qr_url || data.checkout_url || '';
+            }
 
             if (!qrUrl && !qrContent) {
-                 console.warn("Paymenku response OK but no QR URL found:", data);
-                 // Fallback if needed? Or error?
+                 console.warn("Paymenku response OK but no QR URL found:", respData);
             }
         } else {
-            console.error("Paymenku API Error:", data);
+            console.error("Paymenku API Error:", respData);
             // Fallback for demo/testing if API key is invalid or sandbox
             qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=DemoPayment-${reference}`;
         }
