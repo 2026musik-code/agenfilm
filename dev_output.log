@@ -2,85 +2,14 @@
 > temp-app@0.1.0 dev
 > next dev
 
+⚠ Port 3000 is in use by an unknown process, using available port 3001 instead.
 ▲ Next.js 16.1.6 (Turbopack)
-- Local:         http://localhost:3000
-- Network:       http://192.168.0.2:3000
+- Local:         http://localhost:3001
+- Network:       http://192.168.0.2:3001
 
 ✓ Starting...
-⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
-✓ Ready in 1494ms
- GET /admin 200 in 2.6s (compile: 1974ms, proxy.ts: 93ms, render: 523ms)
- GET /api/users 200 in 974ms (compile: 963ms, render: 11ms)
- GET /api/visitor-info 200 in 933ms (compile: 731ms, render: 202ms)
- POST /api/admin/login 200 in 441ms (compile: 346ms, render: 95ms)
-Database loaded from disk.
- POST /api/settings 200 in 520ms (compile: 360ms, render: 160ms)
-Paymenku API Error: {
-  status: 'error',
-  message: 'Unauthorized. Invalid API Key format. Use sk_live_* or sk_test_*'
-}
- POST /api/register 200 in 1657ms (compile: 617ms, render: 1040ms)
- POST /api/admin/login 200 in 195ms (compile: 77ms, render: 118ms)
-Database loaded from disk.
- GET /api/settings 200 in 734ms (compile: 579ms, render: 155ms)
- GET /daftar 200 in 2.9s (compile: 2.2s, proxy.ts: 186ms, render: 524ms)
-Database loaded from disk.
-Paymenku API Error: {
-  status: 'error',
-  message: 'Unauthorized. Invalid API Key format. Use sk_live_* or sk_test_*'
-}
- POST /api/register 200 in 1414ms (compile: 200ms, render: 1213ms)
- POST /api/admin/login 200 in 204ms (compile: 69ms, render: 135ms)
- POST /api/settings 200 in 67ms (compile: 26ms, render: 41ms)
-Database loaded from disk.
-Paymenku API Error: {
-  status: 'error',
-  message: 'Unauthorized. Invalid API Key format. Use sk_live_* or sk_test_*'
-}
- POST /api/register 200 in 1468ms (compile: 371ms, render: 1097ms)
- POST /api/admin/login 200 in 395ms (compile: 175ms, render: 220ms)
- POST /api/admin/create-pin 200 in 607ms (compile: 564ms, render: 43ms)
-Login attempt with PIN: 77777
-Login success for user: PIN Test User (MANUAL-1770730833463)
- POST /api/user/login 200 in 866ms (compile: 757ms, render: 108ms)
-Login attempt with PIN: 77777
-Login success for user: PIN Test User (MANUAL-1770730833463)
- POST /api/user/login 200 in 126ms (compile: 38ms, render: 88ms)
- POST /api/admin/login 200 in 200ms (compile: 66ms, render: 134ms)
-Database loaded from disk.
- POST /api/admin/create-pin 200 in 501ms (compile: 457ms, render: 44ms)
-Login attempt with PIN: 998877
-Login failed: PIN not found
- POST /api/user/login 401 in 58ms (compile: 6ms, render: 52ms)
-Login attempt with PIN: 998877
-Login failed: PIN not found
- POST /api/user/login 401 in 14ms (compile: 3ms, render: 11ms)
- POST /api/admin/login 200 in 35ms (compile: 12ms, render: 23ms)
-Database loaded from disk. Users: 8
-Adding user: Repro User, PIN: 998877
-Saving DB. Users count: 9
- POST /api/admin/create-pin 200 in 1728ms (compile: 1301ms, render: 427ms)
-Login attempt with PIN: 998877
-Database loaded from disk. Users: 9
-Looking up user with PIN: '998877' in 9 users
-Login success for user: Repro User (MANUAL-1770734293755)
- POST /api/user/login 200 in 1300ms (compile: 1240ms, render: 60ms)
-Login attempt with PIN: 998877
-DB already initialized. Users count: 9
-Looking up user with PIN: '998877' in 9 users
-Login success for user: Repro User (MANUAL-1770734293755)
- POST /api/user/login 200 in 24ms (compile: 14ms, render: 10ms)
- GET /admin 200 in 266ms (compile: 99ms, proxy.ts: 22ms, render: 146ms)
- GET /api/users 401 in 255ms (compile: 242ms, render: 13ms)
- GET /api/visitor-info 200 in 310ms (compile: 20ms, render: 290ms)
- GET /login 200 in 380ms (compile: 292ms, proxy.ts: 7ms, render: 81ms)
-✓ Compiled in 137ms
- POST /api/admin/login 200 in 203ms (compile: 65ms, render: 138ms)
-Database loaded from disk. Users: 9
-Adding user: JWT User (MANUAL-1770770020255)
- POST /api/admin/create-pin 200 in 263ms (compile: 223ms, render: 40ms)
-Login attempt with PIN: 55555
+⨯ Unable to acquire lock at /app/.next/dev/lock, is another instance of next deLogin attempt with PIN: MASTER123
 Database loaded from disk. Users: 10
-Login success for user: JWT User (MANUAL-1770770020255)
- POST /api/user/login 200 in 1075ms (compile: 893ms, render: 182ms)
- GET /profile 200 in 1414ms (compile: 1035ms, proxy.ts: 133ms, render: 246ms)
+Injecting Master User
+Login success for user: Demo Admin User (MASTER-USER)
+ POST /api/user/login 200 in 1279ms (compile: 1224ms, render: 56ms)
