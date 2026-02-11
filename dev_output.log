@@ -74,3 +74,13 @@ Login success for user: Repro User (MANUAL-1770734293755)
  GET /api/users 401 in 255ms (compile: 242ms, render: 13ms)
  GET /api/visitor-info 200 in 310ms (compile: 20ms, render: 290ms)
  GET /login 200 in 380ms (compile: 292ms, proxy.ts: 7ms, render: 81ms)
+✓ Compiled in 137ms
+ POST /api/admin/login 200 in 203ms (compile: 65ms, render: 138ms)
+Database loaded from disk. Users: 9
+Adding user: JWT User (MANUAL-1770770020255)
+ POST /api/admin/create-pin 200 in 263ms (compile: 223ms, render: 40ms)
+Login attempt with PIN: 55555
+Database loaded from disk. Users: 10
+Login success for user: JWT User (MANUAL-1770770020255)
+ POST /api/user/login 200 in 1075ms (compile: 893ms, render: 182ms)
+ GET /profile 200 in 1414ms (compile: 1035ms, proxy.ts: 133ms, render: 246ms)

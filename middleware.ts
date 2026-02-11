@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { verifySession } from '@/lib/auth-token';
 
 // 1. Define routes that are always public
 const PUBLIC_FILE_EXTENSIONS = ['.ico', '.svg', '.png', '.jpg', '.jpeg', '.webp'];
@@ -7,10 +8,10 @@ const PUBLIC_FILE_EXTENSIONS = ['.ico', '.svg', '.png', '.jpg', '.jpeg', '.webp'
 const PUBLIC_ROUTES = [
   '/login',
   '/daftar',
-  '/admin', // Admin has its own auth
+  '/admin', // Admin has its own auth (can be updated to JWT too but minimal changes for now)
 ];
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // 2. Allow API routes (they handle their own auth or are public)
@@ -29,19 +30,23 @@ export function middleware(request: NextRequest) {
   // 4. Check if the current route is public
   const isPublic = PUBLIC_ROUTES.some(route => pathname === route || pathname.startsWith(route + '/'));
 
-  // 5. Check for user session cookie
-  const hasSession = request.cookies.has('user_session');
+  // 5. Check for user session cookie (JWT)
+  const token = request.cookies.get('user_session')?.value;
+  let session = null;
+  if (token) {
+      session = await verifySession(token);
+  }
 
   // 6. Redirect Logic
 
   // If trying to access a protected route without session -> Redirect to Login
-  if (!isPublic && !hasSession) {
+  if (!isPublic && !session) {
     const loginUrl = new URL('/login', request.url);
     return NextResponse.redirect(loginUrl);
   }
 
   // If accessing Login/Register while logged in -> Redirect to Home
-  if ((pathname === '/login' || pathname === '/daftar') && hasSession) {
+  if ((pathname === '/login' || pathname === '/daftar') && session) {
      return NextResponse.redirect(new URL('/', request.url));
   }
 
@@ -50,13 +55,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
     '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 };

@@ -87,6 +87,16 @@
       "qrCode": "",
       "qrUrl": "",
       "createdAt": "2026-02-10T14:40:23.466Z"
+    },
+    {
+      "id": "MANUAL-1770770020255",
+      "name": "JWT User",
+      "email": "jwt@test.com",
+      "pin": "55555",
+      "paymentStatus": "paid",
+      "qrCode": "",
+      "qrUrl": "",
+      "createdAt": "2026-02-11T00:33:40.255Z"
     }
   ],
   "settings": {

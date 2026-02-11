@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getUserByPin } from '@/lib/db';
+import { signSession } from '@/lib/auth-token';
 
 export async function POST(req: Request) {
   try {
@@ -8,10 +9,8 @@ export async function POST(req: Request) {
 
     if (!pin) return NextResponse.json({ error: 'PIN required' }, { status: 400 });
 
-    // Normalize PIN to string and trim
     pin = String(pin).trim();
-
-    console.log(`Login attempt with PIN: ${pin}`); // Debug log
+    console.log(`Login attempt with PIN: ${pin}`);
 
     const user = await getUserByPin(pin);
 
@@ -27,6 +26,16 @@ export async function POST(req: Request) {
 
     console.log(`Login success for user: ${user.name} (${user.id})`);
 
+    // Create JWT Token
+    const token = await signSession({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        pin: user.pin,
+        paymentStatus: user.paymentStatus,
+        logo: user.logo
+    });
+
     const response = NextResponse.json({
         success: true,
         user: {
@@ -38,8 +47,8 @@ export async function POST(req: Request) {
         }
     });
 
-    // Set secure cookie for middleware validation
-    response.cookies.set('user_session', user.id, {
+    // Set JWT in cookie
+    response.cookies.set('user_session', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         path: '/',
